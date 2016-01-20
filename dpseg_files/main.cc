@@ -18,9 +18,8 @@
 #define BOOST_UTF8_BEGIN_NAMESPACE
 #define BOOST_UTF8_END_NAMESPACE
 #define BOOST_UTF8_DECL
-
-//#include <boost/detail/utf8_codecvt_facet.hpp>
-#include "utf8_codecvt_facet.cpp"
+#include <boost/detail/utf8_codecvt_facet.ipp>
+//#include "utf8_codecvt_facet.cpp"
 
 #include <tr1/unordered_map>
 
@@ -227,9 +226,9 @@ int main(int argc, char** argv) {
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
-  po::notify(vm);    
+  po::notify(vm);
 
-  if (vm.count("help")) 
+  if (vm.count("help"))
     std::cerr << desc << util::exit_failure;
 
   if (vm.count("config-file") > 0) {
@@ -238,10 +237,10 @@ int main(int argc, char** argv) {
     po::notify(vm);
   }
   string data_file = "stdin";
-  if (vm.count("data-file") > 0) 
+  if (vm.count("data-file") > 0)
     data_file = vm["data-file"].as<std::string>();
   string eval_file = "none";
-  if (vm.count("eval-file") > 0) 
+  if (vm.count("eval-file") > 0)
     eval_file = vm["eval-file"].as<std::string>();
 
   // We need a wide version of the result-field-separator parameter string.
@@ -330,7 +329,7 @@ int main(int argc, char** argv) {
     is.imbue(std::locale(std::locale(), new utf8_codecvt_facet()));
     d.read_eval(is,vm["eval-start-index"].as<U>(),vm["eval-num-sents"].as<U>());
   }
-  
+
   if (debug_level >= 98000) {
     TRACE(S::data.size());
     TRACE(S::data);
@@ -366,10 +365,10 @@ int main(int argc, char** argv) {
       sampler = new BatchBigramTreeSampler(&d);
     }
 	else if (vm["estimator"].as<std::string>() == "D"){
-		std::cerr << "D(ecayed Flip) estimator cannot be used in batch mode." << std::endl; 
+		std::cerr << "D(ecayed Flip) estimator cannot be used in batch mode." << std::endl;
 	}
     else {
-      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>() 
+      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>()
 	      << " is not a recognized value for estimator." << std::endl;
     }
   }
@@ -385,19 +384,19 @@ int main(int argc, char** argv) {
     }
 	else if (vm["estimator"].as<std::string>() == "D") {
 	  if(debug_level >= 1000){
-		std::cerr << "Creating Bigram DecayedMCMC model, with decay rate " << vm["decay_rate"].as<F>()  
-					<< " and samples per utterance " << vm["samples_per_utt"].as<U>() << std::endl; 
-	  }	
+		std::cerr << "Creating Bigram DecayedMCMC model, with decay rate " << vm["decay_rate"].as<F>()
+					<< " and samples per utterance " << vm["samples_per_utt"].as<U>() << std::endl;
+	  }
 	  sampler = new OnlineBigramDecayedMCMC(&d, vm["forget-rate"].as<F>(), vm["decay_rate"].as<F>(), vm["samples_per_utt"].as<U>());
 
 	}
     else {
-      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>() 
+      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>()
 	      << " is not a recognized value for estimator." << std::endl;
     }
   }
   else {
-    std::cerr << HERE << " Error: " << vm["mode"].as<std::string>() 
+    std::cerr << HERE << " Error: " << vm["mode"].as<std::string>()
 	      << " is not a recognized value for mode." << std::endl;
   }
   }
@@ -414,10 +413,10 @@ int main(int argc, char** argv) {
   assert(sampler->sanity_check());
     }
 	else if (vm["estimator"].as<std::string>() == "D") {
-		std::cerr << "D(ecayed Flip) estimator cannot be used in batch mode." << std::endl; 
+		std::cerr << "D(ecayed Flip) estimator cannot be used in batch mode." << std::endl;
 	}
     else {
-      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>() 
+      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>()
 	      << " is not a recognized value for estimator." << std::endl;
     }
   }
@@ -433,19 +432,19 @@ int main(int argc, char** argv) {
     }
 	else if (vm["estimator"].as<std::string>() == "D") {
 	  if(debug_level >= 1000){
-		std::cerr << "Creating Unigram DecayedMCMC model, with decay rate " << vm["decay_rate"].as<F>()  
-					<< " and samples per utterance " << vm["samples_per_utt"].as<U>() << std::endl; 
-	  }	
+		std::cerr << "Creating Unigram DecayedMCMC model, with decay rate " << vm["decay_rate"].as<F>()
+					<< " and samples per utterance " << vm["samples_per_utt"].as<U>() << std::endl;
+	  }
 	  sampler = new OnlineUnigramDecayedMCMC(&d, vm["forget-rate"].as<F>(), vm["decay_rate"].as<F>(), vm["samples_per_utt"].as<U>());
 
 	}
     else {
-      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>() 
+      std::cerr << HERE << " Error: " << vm["estimator"].as<std::string>()
 	      << " is not a recognized value for estimator." << std::endl;
     }
   }
   else {
-    std::cerr << HERE << " Error: " << vm["mode"].as<std::string>() 
+    std::cerr << HERE << " Error: " << vm["mode"].as<std::string>()
 	      << " is not a recognized value for mode." << std::endl;
   }
   }
@@ -458,8 +457,8 @@ int main(int argc, char** argv) {
 						1, vm["eval-maximize"].as<U>(), true);
   }else{
 	sampler->estimate(d.burnin_iterations, wcout, vm["eval-interval"].as<U>(),
-						1, vm["eval-maximize"].as<U>(), false);  
-  }						
+						1, vm["eval-maximize"].as<U>(), false);
+  }
   // evaluates test set at the end of training
   if (eval_file == "none") {
     sampler->print_segmented(os);
@@ -484,5 +483,3 @@ int main(int argc, char** argv) {
   delete sampler;
   } // end for subject
 }  // main()
-
-
